@@ -1,9 +1,13 @@
 package store.auth;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import store.account.AccountOut;
 
 @RestController
 public class AuthResource implements AuthController {
@@ -34,6 +38,16 @@ public class AuthResource implements AuthController {
                 ServletUriComponentsBuilder.fromCurrentRequest().build().toUri()
             )
             .body(TokenOut.builder().jwt(jwt).build());
+    }
+
+    @Override
+    public ResponseEntity<Map<String, String>> solve(TokenOut in) {
+        AccountOut account = authService.solve(in.jwt());
+        return ResponseEntity.ok(
+            Map.of(
+                "idAccount", account.id()
+            )
+        );
     }
 
 }
